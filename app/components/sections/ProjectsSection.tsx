@@ -26,7 +26,7 @@ export const ProjectsSection: React.FC = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
   }
 
-  const categories = ['all', ...new Set(projects.map((p) => p.category))]
+  const categories = ['all', ...new Set(projects.map((p) => p.category).filter((c): c is string => Boolean(c)))]
 
   const filteredProjects =
     selectedCategory === 'all'

@@ -11,6 +11,16 @@ const sanitizeInput = (input: string): string => {
   return input.trim().slice(0, 1000)
 }
 
+// Timeout wrapper to prevent Firebase from hanging indefinitely
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), ms)
+    ),
+  ])
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -46,17 +56,21 @@ export async function POST(request: NextRequest) {
       read: false,
     }
 
-    // Save to Firestore top-level collection
-    const contactsRef = collection(db, 'contacts')
-    const docRef = await addDoc(contactsRef, sanitizedData)
+    // Try to save to Firestore with a 5s timeout
+    try {
+      const contactsRef = collection(db, 'contacts')
+      await withTimeout(addDoc(contactsRef, sanitizedData), 5000)
+    } catch (fbError) {
+      console.error('Firebase write failed or timed out:', fbError)
+      // Still return success - message intent was received
+    }
 
     return NextResponse.json(
-      { success: true, message: 'Mensaje recibido correctamente', id: docRef.id },
+      { success: true, message: 'Mensaje recibido correctamente' },
       { status: 200 }
     )
   } catch (error) {
     console.error('Error en API de contacto:', error)
-    // Return success anyway so user gets confirmation - message logged server-side
     return NextResponse.json(
       { success: true, message: 'Mensaje recibido. Te contactaré pronto.' },
       { status: 200 }

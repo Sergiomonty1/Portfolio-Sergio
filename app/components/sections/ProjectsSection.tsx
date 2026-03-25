@@ -23,8 +23,8 @@ const fallbackProjects: Project[] = [
   {
     id: '1',
     title: 'Tennis Master',
-    shortDescription: '2.000+ descargas orgánicas · 4.8/5 estrellas en Google Play',
-    description: 'Juego de tenis móvil desarrollado en Unity 3D con IA adaptativa, sistema de progresión, monetización integrada y analíticas Firebase. Proyecto respaldado por Viva Games Studio. Incluye sistema de torneos, personalización de personajes, modo offline y multijugador local. Optimización total para dispositivos de gama baja a alta.',
+    shortDescription: '1K+ descargas · 4.9/5 estrellas en Google Play',
+    description: 'Juego de tenis competitivo para móviles estilo Tennis Clash. Compite en partidos 1v1 en tiempo real, desbloquea y mejora personajes únicos con estadísticas personalizables (Resistencia, Velocidad, Agilidad, Servicio). Colecciona entrenadores, accesorios, raquetas y bolsas para potenciar a tu jugador. Sistema de torneos con diferentes canchas, progresión con recompensas, modo carrera y multijugador local. Monetización con AdMob e IAPs, analíticas completas con Firebase y rendimiento optimizado para dispositivos de gama baja a alta.',
     technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics'],
     image: '/projects/tennis-master.jpg',
     color: 'border-t-accent',
@@ -70,8 +70,16 @@ const ProjectCard: React.FC<{ project: Project; index: number; onClick: () => vo
     onClick={onClick}
     data-cursor="pointer"
   >
-    {/* Project image placeholder */}
+    {/* Project image */}
     <div className="aspect-[4/3] bg-surface-200 relative overflow-hidden">
+      {project.image ? (
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+      ) : null}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-7xl font-black text-white/5">{project.title.charAt(0)}</span>
       </div>
@@ -127,7 +135,15 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
       </button>
 
       {/* Header image area */}
-      <div className={`h-48 sm:h-64 bg-surface-200 relative border-t-4 ${project.color}`}>
+      <div className={`h-48 sm:h-64 bg-surface-200 relative border-t-4 ${project.color} overflow-hidden`}>
+        {project.image ? (
+          <img
+            src={project.image}
+            alt={project.title}
+            className="w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        ) : null}
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-[8rem] font-black text-white/5">{project.title.charAt(0)}</span>
         </div>

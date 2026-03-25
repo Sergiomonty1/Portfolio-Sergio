@@ -156,7 +156,7 @@ export const AboutSection: React.FC = () => {
               </p>
               
               <p>
-                Actualmente soy <span className="text-white font-semibold">Lead Game Developer & Co-Fundador en MakTub Games</span>, donde he desarrollado {'"'}Tennis Master{'"'} — un juego con más de <span className="text-accent font-semibold">2.000 descargas orgánicas</span> y <span className="text-accent font-semibold">4.8/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
+                Actualmente soy <span className="text-white font-semibold">Lead Game Developer & Co-Fundador en MakTub Games</span>, donde he desarrollado {'"'}Tennis Masters: Spin Champs{'"'} — un juego con más de <span className="text-accent font-semibold">1K+ descargas</span> y <span className="text-accent font-semibold">4.9/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
               </p>
               
               <p>

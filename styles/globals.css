@@ -8,7 +8,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  cursor: none;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24'%3E%3Cpath d='M5 3L19 12L12 13L9 20L5 3Z' fill='%231db954' stroke='%231db954' stroke-width='1' stroke-linejoin='round'/%3E%3C/svg%3E") 2 2, auto;
 }
 
 html {
@@ -25,7 +25,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Hide cursor on touch devices */
+/* Hide custom cursor on touch devices */
 @media (hover: none) {
   * { cursor: auto; }
 }

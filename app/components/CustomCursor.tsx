@@ -89,33 +89,7 @@ export const CustomCursor: React.FC = () => {
 
   return (
     <>
-      {/* Main cursor - arrow SVG */}
-      <motion.div
-        className="fixed top-0 left-0 pointer-events-none z-[9999]"
-        style={{
-          x: cursorX,
-          y: cursorY,
-        }}
-      >
-        <svg
-          width={isPointer ? 28 : 20}
-          height={isPointer ? 28 : 20}
-          viewBox="0 0 24 24"
-          fill="none"
-          className="transition-all duration-150"
-          style={{ marginLeft: '-2px', marginTop: '-2px' }}
-        >
-          <path
-            d="M5 3L19 12L12 13L9 20L5 3Z"
-            fill={isPointer ? '#1db954' : '#ffffff'}
-            stroke={isPointer ? '#1db954' : '#ffffff'}
-            strokeWidth="1"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </motion.div>
-
-      {/* Trail dots */}
+      {/* Trail dots only - no main cursor element */}
       {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
         <div
           key={i}

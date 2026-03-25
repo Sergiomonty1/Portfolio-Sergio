@@ -7,7 +7,7 @@ const experiences = [
   {
     title: 'Lead Game Developer & Co-Fundador',
     company: 'MakTub Games',
-    location: 'Sevilla, España',
+    location: 'La Algaba, Sevilla',
     period: 'Mar 2024 - Presente',
     description: 'Co-fundador y líder del desarrollo de videojuegos móviles en Unity 3D. Desarrollo de "Tennis Master" con más de 2.000 descargas orgánicas y 4.8/5 estrellas en Google Play. Arquitectura técnica escalable, IA adaptativa, integración de monetización (AdMob, IAPs), analíticas Firebase y optimización de rendimiento. Gestión del ciclo de vida completo: diseño, desarrollo, testing, publicación y análisis post-lanzamiento.',
     technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics', 'JSON'],
@@ -18,7 +18,7 @@ const experiences = [
     title: 'Programador de Videojuegos (Gameplay & IA)',
     company: 'Cero Try Games',
     location: '',
-    period: '2023 - 2024',
+    period: 'Mar 2023 - Mar 2024',
     description: 'Desarrollo de gameplay y sistemas de inteligencia artificial para videojuegos. Implementación de mecánicas de juego, árboles de comportamiento para NPCs, máquinas de estado finitas y optimización de rendimiento. Colaboración en equipo con control de versiones y metodologías ágiles.',
     technologies: ['Unity', 'C#', 'Git', 'Jira', 'Photon', 'REST APIs'],
     color: 'border-l-blue-400',
@@ -30,7 +30,7 @@ const education = [
   {
     title: 'Técnico Superior en Animaciones 3D, Juegos y Entornos Interactivos',
     institution: 'Obicex',
-    location: 'Sevilla, España',
+    location: 'La Algaba, Sevilla',
     period: 'Sep 2021 - Jun 2023',
     description: 'Formación integral en desarrollo de videojuegos, animación 3D, modelado y programación de entornos interactivos. Proyectos prácticos con Unity, Blender y herramientas de la industria.',
     color: 'border-l-yellow-400',

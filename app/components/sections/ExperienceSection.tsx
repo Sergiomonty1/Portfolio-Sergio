@@ -5,31 +5,35 @@ import { motion } from 'framer-motion'
 
 const experiences = [
   {
-    title: 'Lead Game Developer',
+    title: 'Lead Game Developer & Co-Fundador',
     company: 'MakTub Games',
-    period: '2023 - Presente',
-    description: 'Lidero el desarrollo de videojuegos móviles en Unity 3D. Desarrollo de "Tennis Master" con más de 2.000 descargas orgánicas y 4.8/5 estrellas. Arquitectura técnica escalable, IA adaptativa y optimización de rendimiento.',
-    technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob'],
+    location: 'Sevilla, España',
+    period: 'Mar 2024 - Presente',
+    description: 'Co-fundador y líder del desarrollo de videojuegos móviles en Unity 3D. Desarrollo de "Tennis Master" con más de 2.000 descargas orgánicas y 4.8/5 estrellas en Google Play. Arquitectura técnica escalable, IA adaptativa, integración de monetización (AdMob, IAPs), analíticas Firebase y optimización de rendimiento. Gestión del ciclo de vida completo: diseño, desarrollo, testing, publicación y análisis post-lanzamiento.',
+    technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics', 'JSON'],
     color: 'border-l-accent',
     current: true,
   },
   {
-    title: 'Game Developer',
-    company: 'Viva Games Studio',
-    period: '2022 - 2023',
-    description: 'Desarrollo de prototipos de juegos móviles y colaboración en proyectos financiados. Implementación de sistemas de monetización, analíticas y SDKs de terceros.',
-    technologies: ['Unity', 'C#', 'Photon', 'REST APIs'],
+    title: 'Programador de Videojuegos (Gameplay & IA)',
+    company: 'Cero Try Games',
+    location: '',
+    period: '2023 - 2024',
+    description: 'Desarrollo de gameplay y sistemas de inteligencia artificial para videojuegos. Implementación de mecánicas de juego, árboles de comportamiento para NPCs, máquinas de estado finitas y optimización de rendimiento. Colaboración en equipo con control de versiones y metodologías ágiles.',
+    technologies: ['Unity', 'C#', 'Git', 'Jira', 'Photon', 'REST APIs'],
     color: 'border-l-blue-400',
     current: false,
   },
+]
+
+const education = [
   {
-    title: 'Junior Game Developer',
-    company: 'Freelance',
-    period: '2020 - 2022',
-    description: 'Desarrollo independiente de prototipos y gamejams. Experimentación con mecánicas innovadoras, sistemas de IA para NPCs y optimización de rendimiento en dispositivos de gama baja.',
-    technologies: ['Unity', 'C#', 'Blender', 'Git'],
+    title: 'Técnico Superior en Animaciones 3D, Juegos y Entornos Interactivos',
+    institution: 'Obicex',
+    location: 'Sevilla, España',
+    period: 'Sep 2021 - Jun 2023',
+    description: 'Formación integral en desarrollo de videojuegos, animación 3D, modelado y programación de entornos interactivos. Proyectos prácticos con Unity, Blender y herramientas de la industria.',
     color: 'border-l-yellow-400',
-    current: false,
   },
 ]
 
@@ -85,7 +89,7 @@ export const ExperienceSection: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
                 <div>
                   <h3 className="text-xl sm:text-2xl font-bold text-white">{exp.title}</h3>
-                  <p className="text-accent font-medium">{exp.company}</p>
+                  <p className="text-accent font-medium">{exp.company}{exp.location ? ` · ${exp.location}` : ''}</p>
                 </div>
                 <div className="flex items-center gap-3 mt-2 sm:mt-0">
                   <span className="text-sm text-gray-500 font-mono">{exp.period}</span>
@@ -106,6 +110,42 @@ export const ExperienceSection: React.FC = () => {
                   </span>
                 ))}
               </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Education */}
+        <motion.h3
+          className="text-3xl sm:text-4xl font-black text-accent mt-20 mb-8 tracking-tight"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          Formación
+        </motion.h3>
+
+        <div className="space-y-8">
+          {education.map((edu, index) => (
+            <motion.div
+              key={index}
+              className={`relative pl-8 border-l-2 ${edu.color} py-2`}
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.2 }}
+            >
+              <div className="absolute -left-[9px] top-3 w-4 h-4 rounded-full bg-gray-700" />
+
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
+                <div>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white">{edu.title}</h3>
+                  <p className="text-accent font-medium">{edu.institution}{edu.location ? ` · ${edu.location}` : ''}</p>
+                </div>
+                <span className="text-sm text-gray-500 font-mono mt-2 sm:mt-0">{edu.period}</span>
+              </div>
+
+              <p className="text-gray-400 leading-relaxed max-w-3xl">{edu.description}</p>
             </motion.div>
           ))}
         </div>

@@ -24,39 +24,38 @@ const fallbackProjects: Project[] = [
     id: '1',
     title: 'Tennis Master',
     shortDescription: '2.000+ descargas orgánicas · 4.8/5 estrellas en Google Play',
-    description: 'Juego de tenis móvil desarrollado en Unity 3D con IA adaptativa, sistema de progresión, monetización integrada y analíticas Firebase. Proyecto con financiación de Viva Games Studio. Incluye sistema de torneos, personalización de personajes y modo multijugador local.',
+    description: 'Juego de tenis móvil desarrollado en Unity 3D con IA adaptativa, sistema de progresión, monetización integrada y analíticas Firebase. Proyecto respaldado por Viva Games Studio. Incluye sistema de torneos, personalización de personajes, modo offline y multijugador local. Optimización total para dispositivos de gama baja a alta.',
     technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics'],
     image: '/projects/tennis-master.jpg',
     color: 'border-t-accent',
-    liveUrl: 'https://play.google.com/store/apps/details?id=com.vivastudios.tennis.masters',
     playStoreUrl: 'https://play.google.com/store/apps/details?id=com.vivastudios.tennis.masters',
   },
   {
     id: '2',
-    title: 'MakTub Games',
-    shortDescription: 'Estudio de desarrollo indie - Lead Game Developer',
-    description: 'Estudio independiente donde lidero el desarrollo de videojuegos móviles. Gestión del ciclo de vida completo: diseño, arquitectura técnica, desarrollo, testing, publicación y análisis post-lanzamiento. Múltiples títulos en desarrollo.',
-    technologies: ['Unity', 'C#', 'Photon', 'Firebase', 'REST APIs'],
-    image: '/projects/maktub-games.jpg',
+    title: 'Lost in Arcade',
+    shortDescription: 'Juego arcade retro con mecánicas innovadoras',
+    description: 'Juego arcade con estética retro y mecánicas de gameplay innovadoras. Desarrollo completo desde el concepto hasta la publicación, con sistema de puntuación, niveles procedurales y optimización para dispositivos móviles. Diseñado para sesiones rápidas y adictivas.',
+    technologies: ['Unity 3D', 'C#', 'DOTween', 'Firebase', 'AdMob'],
+    image: '/projects/lost-in-arcade.jpg',
     color: 'border-t-blue-400',
   },
   {
     id: '3',
-    title: 'IA Adaptativa',
-    shortDescription: 'Sistema de inteligencia artificial para enemigos de videojuegos',
-    description: 'Framework de IA adaptativa que ajusta la dificultad basándose en el rendimiento del jugador en tiempo real. Implementación de árboles de comportamiento, máquinas de estado finitas y sistemas de aprendizaje por refuerzo aplicados a NPCs.',
-    technologies: ['C#', 'Unity', 'Behavior Trees', 'FSM', 'ML-Agents'],
-    image: '/projects/ai-system.jpg',
-    color: 'border-t-red-400',
+    title: 'Project Aster',
+    shortDescription: 'Proyecto de acción / aventura en desarrollo',
+    description: 'Proyecto de acción y aventura en desarrollo con enfoque en narrativa interactiva y combate dinámico. Arquitectura modular con patrones de diseño escalables, sistema de IA para enemigos con árboles de comportamiento y gestión avanzada de estados. Gráficos estilizados y optimizados para múltiples plataformas.',
+    technologies: ['Unity 3D', 'C#', 'Behavior Trees', 'JSON', 'Git'],
+    image: '/projects/project-aster.jpg',
+    color: 'border-t-purple-400',
   },
   {
     id: '4',
-    title: 'Mobile Optimization',
-    shortDescription: 'Herramientas de optimización para rendimiento móvil',
-    description: 'Suite de herramientas y patrones de optimización para juegos Unity en dispositivos móviles. Object pooling, LOD management, texture streaming, batching automatizado y profiling avanzado. Reducción de hasta un 60% en uso de memoria.',
-    technologies: ['Unity', 'C#', 'Profiler', 'GPU Instancing', 'Addressables'],
-    image: '/projects/optimization.jpg',
-    color: 'border-t-yellow-400',
+    title: 'Multiplayer FPS Shooter',
+    shortDescription: 'Shooter multijugador en tiempo real con Photon',
+    description: 'Shooter en primera persona con modo multijugador en tiempo real utilizando Photon PUN2. Implementación de netcode, sincronización de estados, sistema de matchmaking, armas con diferentes estadísticas y modos de juego. Optimización de red para minimizar latencia y ofrecer una experiencia fluida.',
+    technologies: ['Unity 3D', 'C#', 'Photon PUN2', 'Firebase', 'REST API'],
+    image: '/projects/fps-shooter.jpg',
+    color: 'border-t-red-400',
   },
 ]
 
@@ -102,20 +101,21 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
+    transition={{ duration: 0.2 }}
   >
     {/* Backdrop */}
-    <motion.div 
-      className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+    <div 
+      className="absolute inset-0 bg-black/90"
       onClick={onClose}
     />
     
     {/* Modal content */}
     <motion.div
       className="relative bg-surface-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-sm"
-      initial={{ scale: 0.9, y: 40 }}
-      animate={{ scale: 1, y: 0 }}
-      exit={{ scale: 0.9, y: 40 }}
-      transition={{ type: 'spring', damping: 25 }}
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.95, opacity: 0 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
     >
       {/* Close button */}
       <button

@@ -1,59 +1,109 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue } from 'framer-motion'
+import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react'
+import { motion } from 'framer-motion'
 
 const technologies = [
-  { name: 'Unity', size: 'text-4xl', color: 'text-white' },
-  { name: 'C#', size: 'text-3xl', color: 'text-accent' },
-  { name: 'Visual Studio', size: 'text-xl', color: 'text-blue-400' },
-  { name: 'Firebase', size: 'text-2xl', color: 'text-yellow-400' },
-  { name: 'Git', size: 'text-lg', color: 'text-red-400' },
-  { name: 'Photon', size: 'text-2xl', color: 'text-blue-300' },
-  { name: 'Android', size: 'text-xl', color: 'text-green-400' },
-  { name: 'iOS', size: 'text-lg', color: 'text-gray-300' },
-  { name: 'JSON', size: 'text-2xl', color: 'text-yellow-300' },
-  { name: 'REST API', size: 'text-lg', color: 'text-purple-400' },
-  { name: 'Blender', size: 'text-xl', color: 'text-orange-400' },
-  { name: 'Shader Graph', size: 'text-lg', color: 'text-pink-400' },
-  { name: 'DOTween', size: 'text-xl', color: 'text-green-300' },
-  { name: 'Addressables', size: 'text-lg', color: 'text-cyan-400' },
-  { name: 'SDK', size: 'text-2xl', color: 'text-red-300' },
-  { name: 'Analytics', size: 'text-lg', color: 'text-blue-400' },
-  { name: 'SOLID', size: 'text-xl', color: 'text-accent' },
-  { name: 'MVC', size: 'text-lg', color: 'text-yellow-400' },
-  { name: 'OOP', size: 'text-xl', color: 'text-white' },
-  { name: 'AI', size: 'text-3xl', color: 'text-accent' },
+  'Unity', 'Unity 3D', 'C#', 'Firebase', 'Play Store',
+  'Jira', 'GitHub', 'Trello', 'JSON', 'Visual Studio',
+  'Photon', 'Android', 'REST API', 'DOTween', 'Git',
+  'Analytics', 'AdMob', 'SOLID', 'OOP', 'SDK',
 ]
 
-const FloatingTech: React.FC<{ tech: typeof technologies[0]; index: number }> = ({ tech, index }) => {
-  const randomX = Math.random() * 100
-  const randomY = Math.random() * 100
-  const duration = 15 + Math.random() * 20
-  const delay = Math.random() * 5
+// Spread tech words on a sphere for the 3D cloud
+function computeSpherePositions(count: number) {
+  const positions: { x: number; y: number; z: number }[] = []
+  for (let i = 0; i < count; i++) {
+    const phi = Math.acos(-1 + (2 * i) / count)
+    const theta = Math.sqrt(count * Math.PI) * phi
+    positions.push({
+      x: Math.cos(theta) * Math.sin(phi),
+      y: Math.sin(theta) * Math.sin(phi),
+      z: Math.cos(phi),
+    })
+  }
+  return positions
+}
+
+const TechCloud: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const animRef = useRef<number>(0)
+  const rotRef = useRef({ x: 0, y: 0 })
+
+  const spherePositions = useMemo(() => computeSpherePositions(technologies.length), [])
+
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2
+    setMousePos({ x, y })
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setMousePos({ x: 0, y: 0 })
+  }, [])
+
+  // Slowly auto-rotate + respond to mouse
+  useEffect(() => {
+    let running = true
+    const loop = () => {
+      if (!running) return
+      rotRef.current.x += 0.002 + mousePos.y * 0.01
+      rotRef.current.y += 0.003 + mousePos.x * 0.01
+      animRef.current = requestAnimationFrame(loop)
+
+      const container = containerRef.current
+      if (!container) return
+      const items = container.querySelectorAll<HTMLSpanElement>('[data-sphere-idx]')
+      const radius = 180
+      const cosX = Math.cos(rotRef.current.x)
+      const sinX = Math.sin(rotRef.current.x)
+      const cosY = Math.cos(rotRef.current.y)
+      const sinY = Math.sin(rotRef.current.y)
+
+      items.forEach((el) => {
+        const idx = Number(el.dataset.sphereIdx)
+        const sp = spherePositions[idx]
+        // Rotate around X then Y
+        const y1 = sp.y * cosX - sp.z * sinX
+        const z1 = sp.y * sinX + sp.z * cosX
+        const x2 = sp.x * cosY - z1 * sinY
+        const z2 = sp.x * sinY + z1 * cosY
+
+        const scale = (z2 + 1.5) / 2.5 // 0.2 to 1.0
+        const opacity = Math.max(0.15, (z2 + 1) / 2)
+        el.style.transform = `translate(-50%, -50%) translate(${x2 * radius}px, ${y1 * radius}px) scale(${scale})`
+        el.style.opacity = `${opacity}`
+        el.style.zIndex = `${Math.round(z2 * 100)}`
+      })
+    }
+    loop()
+    return () => { running = false; cancelAnimationFrame(animRef.current) }
+  }, [mousePos, spherePositions])
 
   return (
-    <motion.span
-      className={`absolute font-bold ${tech.size} ${tech.color} opacity-60 hover:opacity-100 transition-opacity duration-300 whitespace-nowrap select-none`}
-      style={{
-        left: `${randomX}%`,
-        top: `${randomY}%`,
-      }}
-      animate={{
-        x: [0, 30 * Math.sin(index), -20 * Math.cos(index), 0],
-        y: [0, -20 * Math.cos(index), 30 * Math.sin(index), 0],
-      }}
-      transition={{
-        duration,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay,
-      }}
-      whileHover={{ scale: 1.2, opacity: 1 }}
-      data-cursor="pointer"
+    <div
+      ref={containerRef}
+      className="relative w-full h-[500px] lg:h-[600px] flex items-center justify-center"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
     >
-      {tech.name}
-    </motion.span>
+      {technologies.map((tech, index) => (
+        <span
+          key={tech}
+          data-sphere-idx={index}
+          className="absolute text-[#1db954] font-bold whitespace-nowrap select-none transition-none"
+          style={{
+            fontSize: index < 5 ? '1.5rem' : index < 10 ? '1.2rem' : '1rem',
+            willChange: 'transform, opacity',
+          }}
+        >
+          {tech}
+        </span>
+      ))}
+    </div>
   )
 }
 
@@ -106,7 +156,7 @@ export const AboutSection: React.FC = () => {
               </p>
               
               <p>
-                Actualmente soy <span className="text-white font-semibold">Lead Game Developer en MakTub Games</span>, donde he desarrollado {'"'}Tennis Master{'"'} — un juego con más de <span className="text-accent font-semibold">2.000 descargas orgánicas</span> y <span className="text-accent font-semibold">4.8/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
+                Actualmente soy <span className="text-white font-semibold">Lead Game Developer & Co-Fundador en MakTub Games</span>, donde he desarrollado {'"'}Tennis Master{'"'} — un juego con más de <span className="text-accent font-semibold">2.000 descargas orgánicas</span> y <span className="text-accent font-semibold">4.8/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
               </p>
               
               <p>
@@ -121,17 +171,14 @@ export const AboutSection: React.FC = () => {
             <p className="tag-decoration mt-2">{'</p>'}</p>
           </motion.div>
 
-          {/* Right: Floating tech cloud */}
+          {/* Right: 3D tech sphere cloud */}
           <motion.div
-            className="relative h-[500px] lg:h-[600px]"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.5 }}
           >
-            {technologies.map((tech, index) => (
-              <FloatingTech key={tech.name} tech={tech} index={index} />
-            ))}
+            <TechCloud />
           </motion.div>
         </div>
       </div>

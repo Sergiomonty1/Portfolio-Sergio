@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { FiLinkedin, FiGithub, FiYoutube } from 'react-icons/fi'
 
 const navItems = [
+  { label: 'Portfolio', href: '#projects' },
   { label: 'Sobre Mí', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Proyectos', href: '#projects' },
+  { label: 'Experiencia', href: '#experience' },
   { label: 'Contacto', href: '#contact' },
 ]
 
 const socialLinks = [
-  { icon: FiLinkedin, href: 'https://www.linkedin.com/in/sergio-montilla-moreno/', label: 'LinkedIn' },
+  { icon: FiLinkedin, href: 'https://www.linkedin.com/in/sergiomonterocarmona/', label: 'LinkedIn' },
   { icon: FiGithub, href: 'https://github.com/Sergiomonty1', label: 'GitHub' },
 ]
 
@@ -28,7 +28,7 @@ export const Navbar: React.FC = () => {
           }
         })
       },
-      { threshold: 0.3 }
+      { threshold: 0.15, rootMargin: '-10% 0px -60% 0px' }
     )
 
     const sections = document.querySelectorAll('section[id]')

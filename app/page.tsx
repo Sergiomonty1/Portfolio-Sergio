@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import {
   HeroSection,
   AboutSection,
@@ -10,6 +11,10 @@ import {
 import { CustomCursor } from '@/app/components/CustomCursor'
 
 export default function Home() {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <CustomCursor />

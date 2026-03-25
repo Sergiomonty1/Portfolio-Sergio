@@ -1,168 +1,140 @@
 'use client'
 
-import React from 'react'
-import { motion } from 'framer-motion'
-import { SectionTitle, Container, Card, Badge } from '@/app/components/ui'
-import { useProfile } from '@/lib/hooks'
+import React, { useEffect, useRef, useState } from 'react'
+import { motion, useMotionValue } from 'framer-motion'
 
-export const AboutSection: React.FC = () => {
-  const { profile, loading, error } = useProfile()
+const technologies = [
+  { name: 'Unity', size: 'text-4xl', color: 'text-white' },
+  { name: 'C#', size: 'text-3xl', color: 'text-accent' },
+  { name: 'Visual Studio', size: 'text-xl', color: 'text-blue-400' },
+  { name: 'Firebase', size: 'text-2xl', color: 'text-yellow-400' },
+  { name: 'Git', size: 'text-lg', color: 'text-red-400' },
+  { name: 'Photon', size: 'text-2xl', color: 'text-blue-300' },
+  { name: 'Android', size: 'text-xl', color: 'text-green-400' },
+  { name: 'iOS', size: 'text-lg', color: 'text-gray-300' },
+  { name: 'JSON', size: 'text-2xl', color: 'text-yellow-300' },
+  { name: 'REST API', size: 'text-lg', color: 'text-purple-400' },
+  { name: 'Blender', size: 'text-xl', color: 'text-orange-400' },
+  { name: 'Shader Graph', size: 'text-lg', color: 'text-pink-400' },
+  { name: 'DOTween', size: 'text-xl', color: 'text-green-300' },
+  { name: 'Addressables', size: 'text-lg', color: 'text-cyan-400' },
+  { name: 'SDK', size: 'text-2xl', color: 'text-red-300' },
+  { name: 'Analytics', size: 'text-lg', color: 'text-blue-400' },
+  { name: 'SOLID', size: 'text-xl', color: 'text-accent' },
+  { name: 'MVC', size: 'text-lg', color: 'text-yellow-400' },
+  { name: 'OOP', size: 'text-xl', color: 'text-white' },
+  { name: 'AI', size: 'text-3xl', color: 'text-accent' },
+]
 
-  const skills = [
-    'Unity & C#',
-    'Game Design',
-    'Multiplayer Systems',
-    'UI/UX Design',
-    'Server Architecture',
-    'Performance Optimization',
-    'Procedural Generation',
-    'VR Development',
-    'Mobile Games',
-    'Unreal Engine',
-    'Photon Networking',
-    'AWS & Firebase',
-  ]
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  }
+const FloatingTech: React.FC<{ tech: typeof technologies[0]; index: number }> = ({ tech, index }) => {
+  const randomX = Math.random() * 100
+  const randomY = Math.random() * 100
+  const duration = 15 + Math.random() * 20
+  const delay = Math.random() * 5
 
   return (
-    <section id="about" className="py-20 md:py-40 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <motion.div 
-          className="absolute -top-40 right-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"
-          animate={{ y: [0, 50, 0] }}
-          transition={{ duration: 8, repeat: Infinity }}
-        />
-        <motion.div 
-          className="absolute -bottom-40 left-0 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl"
-          animate={{ x: [0, 50, 0] }}
-          transition={{ duration: 10, repeat: Infinity }}
-        />
-      </div>
+    <motion.span
+      className={`absolute font-bold ${tech.size} ${tech.color} opacity-60 hover:opacity-100 transition-opacity duration-300 whitespace-nowrap select-none`}
+      style={{
+        left: `${randomX}%`,
+        top: `${randomY}%`,
+      }}
+      animate={{
+        x: [0, 30 * Math.sin(index), -20 * Math.cos(index), 0],
+        y: [0, -20 * Math.cos(index), 30 * Math.sin(index), 0],
+      }}
+      transition={{
+        duration,
+        repeat: Infinity,
+        ease: 'easeInOut',
+        delay,
+      }}
+      whileHover={{ scale: 1.2, opacity: 1 }}
+      data-cursor="pointer"
+    >
+      {tech.name}
+    </motion.span>
+  )
+}
 
-      <Container animate>
-        <SectionTitle
-          title="Sobre Mí"
-          subtitle="Desarrollador especializado en crear experiencias interactivas de clase mundial"
-        />
-
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+export const AboutSection: React.FC = () => {
+  return (
+    <section id="about" className="py-32 lg:py-40 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+        {/* Section tag */}
+        <motion.p
+          className="tag-decoration mb-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
         >
-          {/* Main Bio Card */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <motion.div 
-              className="p-8 sm:p-10 rounded-2xl bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-primary-500/20 backdrop-blur-sm"
-              whileHover={{ borderColor: 'rgba(0, 217, 255, 0.5)', y: -5 }}
-              transition={{ type: 'spring', stiffness: 400 }}
-            >
-              <div className="space-y-6">
-                {loading ? (
-                  <div className="space-y-4">
-                    <div className="h-8 bg-dark-700/50 rounded w-2/3 animate-pulse" />
-                    <div className="h-4 bg-dark-700/50 rounded w-1/3 animate-pulse mt-4" />
-                    <div className="h-24 bg-dark-700/50 rounded animate-pulse" />
-                  </div>
-                ) : error ? (
-                  <p className="text-yellow-400 font-medium">⚠️ Cargando información del perfil...</p>
-                ) : (
-                  <>
-                    <div>
-                      <h3 className="text-3xl sm:text-4xl font-bold text-white mb-2">
-                        {profile?.name || 'Sergio Martínez'}
-                      </h3>
-                      <p className="text-xl text-primary-300 font-semibold">
-                        {profile?.title || 'Ingeniero de Videojuegos'}
-                      </p>
-                    </div>
-                    <div className="h-1 w-16 bg-gradient-to-r from-primary-500 to-secondary-500" />
-                    <p className="text-gray-300 text-lg leading-relaxed">
-                      {profile?.description ||
-                        'Apasionado por la programación y el desarrollo de videojuegos. Especializado en Unity C# con experiencia en desarrollo full-stack. Mi objetivo es crear experiencias interactivas inmersivas que cautiven a los jugadores y dejen una marca duradera en la industria.'}
-                    </p>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Statistics */}
-          <motion.div variants={itemVariants} className="space-y-4">
-            {[
-              { icon: '⚡', number: '7+', label: 'Años de Trayectoria' },
-              { icon: '🎮', number: '25+', label: 'Proyectos Estelar' },
-              { icon: '📊', number: '150K+', label: 'Descargas Globales' },
-            ].map((stat, idx) => (
-              <motion.div
-                key={idx}
-                className="p-6 rounded-xl bg-gradient-to-br from-primary-500/5 to-secondary-500/5 border border-primary-500/20 backdrop-blur-sm hover:border-primary-500/50 transition-all"
-                whileHover={{ y: -3, scale: 1.02 }}
-              >
-                <p className="text-3xl mb-2">{stat.icon}</p>
-                <p className="text-3xl font-black bg-gradient-to-r from-primary-300 to-secondary-300 bg-clip-text text-transparent">
-                  {stat.number}
-                </p>
-                <p className="text-xs text-gray-400 mt-1 font-medium">{stat.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
-
-        {/* Skills Section */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="mt-20"
+          {'<h2>'}
+        </motion.p>
+        
+        <motion.h2
+          className="text-5xl sm:text-6xl lg:text-7xl font-black text-accent mb-2 tracking-tight"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          <motion.div variants={itemVariants} className="mb-10">
-            <h3 className="text-4xl sm:text-5xl font-black tracking-tight">
-              <span className="bg-gradient-to-r from-primary-300 to-secondary-300 bg-clip-text text-transparent">
-                Habilidades Técnicas
-              </span>
-            </h3>
-          </motion.div>
-          
-          <motion.div 
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
-            variants={containerVariants}
+          Sobre Mí
+        </motion.h2>
+
+        <motion.p
+          className="tag-decoration mb-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          {'</h2>'}
+        </motion.p>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+          {/* Left: Bio */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            {skills.map((skill, index) => (
-              <motion.div 
-                key={skill} 
-                variants={itemVariants}
-                whileHover={{ y: -5, scale: 1.05 }}
-                className="group"
-              >
-                <div className="p-4 rounded-lg bg-gradient-to-br from-primary-500/10 to-secondary-500/10 border border-primary-500/20 text-center hover:border-primary-500/50 transition-all backdrop-blur-sm">
-                  <p className="text-sm sm:text-base font-semibold text-primary-300 group-hover:text-primary-200 transition-colors">
-                    {skill}
-                  </p>
-                </div>
-              </motion.div>
+            <p className="tag-decoration mb-2">{'<p>'}</p>
+            
+            <div className="space-y-6 text-gray-300 text-base sm:text-lg leading-relaxed">
+              <p>
+                Desarrollador de Videojuegos Mobile especializado en <span className="text-accent font-semibold">Unity 3D</span> y <span className="text-accent font-semibold">C#</span>. Lidero el ciclo de vida completo de desarrollo, desde la arquitectura técnica hasta la publicación y análisis de datos post-lanzamiento.
+              </p>
+              
+              <p>
+                Actualmente soy <span className="text-white font-semibold">Lead Game Developer en MakTub Games</span>, donde he desarrollado {'"'}Tennis Master{'"'} — un juego con más de <span className="text-accent font-semibold">2.000 descargas orgánicas</span> y <span className="text-accent font-semibold">4.8/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
+              </p>
+              
+              <p>
+                Mi enfoque técnico se centra en arquitectura de gameplay escalable, programación de IA adaptativa, optimización de rendimiento para dispositivos móviles e integración de SDKs y analíticas.
+              </p>
+
+              <p>
+                Busco siempre resolver problemas técnicos complejos mediante código eficiente. Abierto a conectar con otros profesionales del sector y explorar nuevos retos.
+              </p>
+            </div>
+
+            <p className="tag-decoration mt-2">{'</p>'}</p>
+          </motion.div>
+
+          {/* Right: Floating tech cloud */}
+          <motion.div
+            className="relative h-[500px] lg:h-[600px]"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.5 }}
+          >
+            {technologies.map((tech, index) => (
+              <FloatingTech key={tech.name} tech={tech} index={index} />
             ))}
           </motion.div>
-        </motion.div>
-      </Container>
+        </div>
+      </div>
     </section>
   )
 }

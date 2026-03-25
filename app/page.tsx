@@ -1,3 +1,5 @@
+'use client'
+
 import {
   HeroSection,
   AboutSection,
@@ -5,14 +7,16 @@ import {
   ProjectsSection,
   ContactSection,
 } from '@/app/components/sections'
+import { CustomCursor } from '@/app/components/CustomCursor'
 
 export default function Home() {
   return (
     <>
+      <CustomCursor />
       <HeroSection />
+      <ProjectsSection />
       <AboutSection />
       <ExperienceSection />
-      <ProjectsSection />
       <ContactSection />
     </>
   )

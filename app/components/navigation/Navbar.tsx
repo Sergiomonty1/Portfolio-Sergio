@@ -1,98 +1,153 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Button } from '@/app/components/ui'
-import { FiMenu, FiX } from 'react-icons/fi'
+import React, { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { FiLinkedin, FiGithub, FiYoutube } from 'react-icons/fi'
 
 const navItems = [
-  { label: 'Inicio', href: '#' },
   { label: 'Sobre Mí', href: '#about' },
-  { label: 'Experiencia', href: '#experience' },
+  { label: 'Skills', href: '#skills' },
   { label: 'Proyectos', href: '#projects' },
   { label: 'Contacto', href: '#contact' },
 ]
 
+const socialLinks = [
+  { icon: FiLinkedin, href: 'https://www.linkedin.com/in/sergio-montilla-moreno/', label: 'LinkedIn' },
+  { icon: FiGithub, href: 'https://github.com/Sergiomonty1', label: 'GitHub' },
+]
+
 export const Navbar: React.FC = () => {
+  const [activeSection, setActiveSection] = useState('')
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id)
+          }
+        })
+      },
+      { threshold: 0.3 }
+    )
+
+    const sections = document.querySelectorAll('section[id]')
+    sections.forEach((section) => observer.observe(section))
+    return () => sections.forEach((section) => observer.unobserve(section))
+  }, [])
+
+  return (
+    <>
+      {/* Left sidebar nav - desktop only */}
+      <motion.nav
+        className="fixed left-0 top-0 h-full z-50 hidden lg:flex flex-col items-center justify-center w-24"
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.5 }}
+      >
+        <div className="flex flex-col items-center gap-8">
+          {navItems.map((item) => (
+            <motion.a
+              key={item.href}
+              href={item.href}
+              className={`text-xs font-medium tracking-widest uppercase transition-colors duration-300 writing-vertical ${
+                activeSection === item.href.replace('#', '')
+                  ? 'text-accent'
+                  : 'text-gray-500 hover:text-white'
+              }`}
+              style={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}
+              whileHover={{ x: 5 }}
+              data-cursor="pointer"
+            >
+              {item.label}
+            </motion.a>
+          ))}
+        </div>
+      </motion.nav>
+
+      {/* Bottom social links - desktop */}
+      <motion.div
+        className="fixed left-8 bottom-8 z-50 hidden lg:flex flex-col items-center gap-4"
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, delay: 2 }}
+      >
+        {socialLinks.map((social) => {
+          const Icon = social.icon
+          return (
+            <motion.a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-500 hover:text-accent transition-colors duration-300"
+              whileHover={{ y: -3 }}
+              aria-label={social.label}
+              data-cursor="pointer"
+            >
+              <Icon size={18} />
+            </motion.a>
+          )
+        })}
+        <div className="w-px h-16 bg-gray-700 mt-2" />
+      </motion.div>
+
+      {/* Mobile hamburger */}
+      <MobileNav />
+    </>
+  )
+}
+
+const MobileNav: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 glass border-b border-dark-700"
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between md:h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 group">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-600 rounded-lg flex items-center justify-center group-hover:shadow-lg-glow transition-all">
-              <span className="font-bold text-white text-lg">S</span>
-            </div>
-            <span className="hidden sm:inline font-bold text-lg grad-text">Sergio</span>
-          </Link>
+    <div className="lg:hidden">
+      <button
+        className="fixed top-6 right-6 z-[60] w-10 h-10 flex flex-col justify-center items-center gap-1.5"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-label="Menu"
+      >
+        <motion.span
+          className="block w-6 h-0.5 bg-white"
+          animate={isOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: 0 }}
+        />
+        <motion.span
+          className="block w-6 h-0.5 bg-white"
+          animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
+        />
+        <motion.span
+          className="block w-6 h-0.5 bg-white"
+          animate={isOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 0 }}
+        />
+      </button>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                className="text-sm font-medium text-gray-300 hover:text-primary-400 transition-colors relative"
-                whileHover={{ y: -2 }}
-              >
-                {item.label}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-600 w-0 group-hover:w-full transition-all"
-                  layoutId="underline"
-                />
-              </motion.a>
-            ))}
-          </div>
-
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button variant="primary" size="sm">
-              Descargar CV
-            </Button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-white"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
+      <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="md:hidden pb-6 space-y-4"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="block px-4 py-2 text-gray-300 hover:text-primary-400 hover:bg-white/5 rounded-lg transition-all"
-                onClick={() => setIsOpen(false)}
-              >
-                {item.label}
-              </Link>
-            ))}
-            <Button variant="primary" className="w-full" size="md">
-              Descargar CV
-            </Button>
+            <nav className="flex flex-col items-center gap-8">
+              {navItems.map((item, idx) => (
+                <motion.a
+                  key={item.href}
+                  href={item.href}
+                  className="text-2xl font-bold text-white hover:text-accent transition-colors"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+            </nav>
           </motion.div>
         )}
-      </div>
-    </motion.nav>
+      </AnimatePresence>
+    </div>
   )
 }

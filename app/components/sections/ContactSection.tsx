@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { SectionTitle, Container, Card, Button } from '@/app/components/ui'
-import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi'
+import { FiMail, FiMapPin, FiSend, FiLinkedin, FiGithub } from 'react-icons/fi'
 
 export const ContactSection: React.FC = () => {
   const [formState, setFormState] = useState({
@@ -19,10 +18,7 @@ export const ContactSection: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-    setFormState((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
+    setFormState((prev) => ({ ...prev, [name]: value }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,192 +40,195 @@ export const ContactSection: React.FC = () => {
       } else {
         setSubmitStatus('error')
       }
-    } catch (error) {
-      console.error('Error submitting form:', error)
+    } catch {
       setSubmitStatus('error')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-  }
-
-  const contactInfo = [
-    {
-      icon: FiMail,
-      label: 'Email',
-      value: 'sergio@example.com',
-      href: 'mailto:sergio@example.com',
-    },
-    {
-      icon: FiPhone,
-      label: 'Teléfono',
-      value: '+34 XXX XXX XXX',
-      href: 'tel:+34XXXXXXXXX',
-    },
-    {
-      icon: FiMapPin,
-      label: 'Ubicación',
-      value: 'España',
-      href: '#',
-    },
-  ]
-
   return (
-    <section id="contact" className="py-20 md:py-32 relative">
-      {/* Background Elements */}
-      <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl" />
-      </div>
-
-      <Container animate>
-        <SectionTitle
-          title="Contacto"
-          subtitle="¿Tienes un proyecto o pregunta? Contáctame"
-          alignment="center"
-        />
-
-        <motion.div
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
+    <section id="contact" className="py-32 lg:py-40 relative">
+      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+        <motion.p
+          className="tag-decoration mb-2"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
         >
-          {contactInfo.map((info) => {
-            const Icon = info.icon
-            return (
-              <motion.a key={info.label} href={info.href} variants={itemVariants}>
-                <Card variant="glass" hover>
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary-500/20 flex items-center justify-center">
-                      <Icon size={24} className="text-primary-400" />
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-400 mb-1">
-                        {info.label}
-                      </h4>
-                      <p className="text-white font-semibold">{info.value}</p>
-                    </div>
-                  </div>
-                </Card>
-              </motion.a>
-            )
-          })}
-        </motion.div>
+          {'<h2>'}
+        </motion.p>
 
-        {/* Contact Form */}
-        <motion.div
-          className="max-w-2xl mx-auto"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+        <motion.h2
+          className="text-5xl sm:text-6xl lg:text-7xl font-black text-accent mb-2 tracking-tight"
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
         >
-          <Card variant="glass">
+          Contacto
+        </motion.h2>
+
+        <motion.p
+          className="tag-decoration mb-4"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          {'</h2>'}
+        </motion.p>
+
+        <motion.p
+          className="text-gray-400 text-lg max-w-2xl mb-16"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+        >
+          Interesado en oportunidades freelance o colaboraciones.
+          Si tienes algún proyecto o pregunta, no dudes en escribirme.
+        </motion.p>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          {/* Left: Contact form */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <p className="tag-decoration mb-4">{'<form>'}</p>
+
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Nombre
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formState.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 rounded-lg bg-dark-800 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-                    placeholder="Tu nombre"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formState.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 rounded-lg bg-dark-800 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-                    placeholder="tu@email.com"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Asunto
-                </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <input
                   type="text"
-                  name="subject"
-                  value={formState.subject}
+                  name="name"
+                  value={formState.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg bg-dark-800 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors"
-                  placeholder="Asunto del mensaje"
+                  placeholder="Nombre"
+                  className="w-full px-0 py-3 bg-transparent border-b border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-accent transition-colors font-light"
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
-                  Mensaje
-                </label>
-                <textarea
-                  name="message"
-                  value={formState.message}
+                <input
+                  type="email"
+                  name="email"
+                  value={formState.email}
                   onChange={handleInputChange}
                   required
-                  rows={5}
-                  className="w-full px-4 py-3 rounded-lg bg-dark-800 border border-dark-600 text-white placeholder-gray-500 focus:outline-none focus:border-primary-500 transition-colors resize-none"
-                  placeholder="Tu mensaje..."
+                  placeholder="Email"
+                  className="w-full px-0 py-3 bg-transparent border-b border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-accent transition-colors font-light"
                 />
               </div>
+              <input
+                type="text"
+                name="subject"
+                value={formState.subject}
+                onChange={handleInputChange}
+                required
+                placeholder="Asunto"
+                className="w-full px-0 py-3 bg-transparent border-b border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-accent transition-colors font-light"
+              />
+              <textarea
+                name="message"
+                value={formState.message}
+                onChange={handleInputChange}
+                required
+                rows={5}
+                placeholder="Mensaje"
+                className="w-full px-0 py-3 bg-transparent border-b border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-accent transition-colors resize-none font-light"
+              />
 
               {submitStatus === 'success' && (
-                <div className="p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
-                  <p className="text-green-400 text-sm">
-                    ¡Mensaje enviado exitosamente! Te contactaré pronto.
-                  </p>
-                </div>
+                <p className="text-accent font-medium">Mensaje enviado correctamente.</p>
               )}
-
               {submitStatus === 'error' && (
-                <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg">
-                  <p className="text-red-400 text-sm">
-                    Error al enviar el mensaje. Por favor intenta de nuevo.
-                  </p>
-                </div>
+                <p className="text-red-400 font-medium">Error al enviar. Inténtalo de nuevo.</p>
               )}
 
-              <Button
-                variant="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isSubmitting}
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center gap-3 px-10 py-4 border border-accent text-accent text-sm font-medium tracking-[0.3em] uppercase hover:bg-accent hover:text-black transition-all duration-300 disabled:opacity-50"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                data-cursor="pointer"
               >
-                Enviar Mensaje
-              </Button>
+                <FiSend size={16} />
+                {isSubmitting ? 'Enviando...' : 'Enviar mensaje'}
+              </motion.button>
             </form>
-          </Card>
-        </motion.div>
-      </Container>
+
+            <p className="tag-decoration mt-4">{'</form>'}</p>
+          </motion.div>
+
+          {/* Right: Map + Info */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="space-y-8"
+          >
+            {/* Contact info card */}
+            <div className="p-6 bg-surface-50 border border-gray-800 rounded-sm">
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <FiMapPin className="text-accent" size={20} />
+                  <div>
+                    <p className="text-white font-semibold">Sevilla, España</p>
+                    <p className="text-gray-500 text-sm">Disponible para trabajo remoto</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <FiMail className="text-accent" size={20} />
+                  <p className="text-gray-400">sergio.montilla@outlook.com</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <FiLinkedin className="text-accent" size={20} />
+                  <a 
+                    href="https://www.linkedin.com/in/sergio-montilla-moreno/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-accent transition-colors"
+                    data-cursor="pointer"
+                  >
+                    LinkedIn
+                  </a>
+                </div>
+                <div className="flex items-center gap-4">
+                  <FiGithub className="text-accent" size={20} />
+                  <a 
+                    href="https://github.com/Sergiomonty1" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-accent transition-colors"
+                    data-cursor="pointer"
+                  >
+                    GitHub
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Map - Seville, Spain */}
+            <div className="relative h-[300px] sm:h-[350px] bg-surface-50 border border-gray-800 rounded-sm overflow-hidden">
+              <iframe
+                title="Ubicación - Sevilla, España"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-6.05%2C37.33%2C-5.85%2C37.43&layer=mapnik&marker=37.3891%2C-5.9845"
+                className="w-full h-full border-0 grayscale invert opacity-80 contrast-125"
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+              {/* Map overlay pin label */}
+              <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-4 py-3 rounded-sm border border-gray-800">
+                <p className="text-white font-semibold text-sm">Sergio Montilla</p>
+                <p className="text-gray-400 text-xs">Sevilla, España</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </section>
   )
 }

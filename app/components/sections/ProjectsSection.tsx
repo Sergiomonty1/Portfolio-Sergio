@@ -24,7 +24,7 @@ const fallbackProjects: Project[] = [
     id: '1',
     title: 'Tennis Master',
     shortDescription: '1K+ descargas · 4.9/5 estrellas en Google Play',
-    description: 'Juego de tenis competitivo para móviles estilo Tennis Clash. Compite en partidos 1v1 en tiempo real, desbloquea y mejora personajes únicos con estadísticas personalizables (Resistencia, Velocidad, Agilidad, Servicio). Colecciona entrenadores, accesorios, raquetas y bolsas para potenciar a tu jugador. Sistema de torneos con diferentes canchas, progresión con recompensas, modo carrera y multijugador local. Monetización con AdMob e IAPs, analíticas completas con Firebase y rendimiento optimizado para dispositivos de gama baja a alta.',
+    description: 'Juego de tenis competitivo para móviles. Compite en partidos 1v1 online, desbloquea y mejora personajes únicos con estadísticas personalizables (Resistencia, Velocidad, Agilidad, Servicio). Colecciona entrenadores, accesorios, raquetas y bolsas para potenciar a tu jugador. Sistema de torneos con diferentes canchas, progresión con recompensas y modo carrera. Monetización con AdMob e IAPs, analíticas completas con Firebase y rendimiento optimizado para dispositivos de gama baja a alta.',
     technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics'],
     image: '/projects/tennis-master.jpg',
     color: 'border-t-accent',
@@ -72,17 +72,17 @@ const ProjectCard: React.FC<{ project: Project; index: number; onClick: () => vo
   >
     {/* Project image */}
     <div className="aspect-[4/3] bg-surface-200 relative overflow-hidden">
-      {project.image ? (
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-        />
-      ) : null}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="text-7xl font-black text-white/5">{project.title.charAt(0)}</span>
       </div>
+      {project.image ? (
+        <img
+          src={project.image}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+      ) : null}
       <motion.div 
         className="absolute inset-0 bg-accent/10"
         initial={{ opacity: 0 }}
@@ -136,17 +136,17 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
 
       {/* Header image area */}
       <div className={`h-48 sm:h-64 bg-surface-200 relative border-t-4 ${project.color} overflow-hidden`}>
-        {project.image ? (
-          <img
-            src={project.image}
-            alt={project.title}
-            className="w-full h-full object-cover"
-            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
-        ) : null}
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-[8rem] font-black text-white/5">{project.title.charAt(0)}</span>
         </div>
+        {project.image ? (
+          <img
+            src={project.image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover"
+            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          />
+        ) : null}
       </div>
 
       {/* Content */}

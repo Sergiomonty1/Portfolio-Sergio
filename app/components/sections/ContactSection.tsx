@@ -240,7 +240,7 @@ export const ContactSection: React.FC = () => {
             <div className="relative h-[300px] sm:h-[350px] bg-[#111] border border-gray-800 overflow-hidden">
               <iframe
                 title="Ubicación - La Algaba, Sevilla"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-6.02%2C37.44%2C-5.93%2C37.48&layer=mapnik&marker=37.4616%2C-5.9788"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-6.0025%2C37.4525%2C-5.9550%2C37.4705&layer=mapnik&marker=37.4613%2C-5.9788"
                 className="w-full h-full border-0 grayscale invert opacity-80 contrast-125"
                 loading="lazy"
                 referrerPolicy="no-referrer"

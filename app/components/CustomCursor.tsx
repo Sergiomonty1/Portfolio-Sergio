@@ -1,15 +1,17 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { useMotionValue } from 'framer-motion'
 
-const TRAIL_LENGTH = 12
+const TRAIL_LENGTH = 20
 
 export const CustomCursor: React.FC = () => {
-  const [isPointer, setIsPointer] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const cursorX = useMotionValue(-100)
   const cursorY = useMotionValue(-100)
+  const prevPos = useRef({ x: -100, y: -100 })
+  const isMoving = useRef(false)
+  const moveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const trailRef = useRef<{ x: number; y: number }[]>(
     Array.from({ length: TRAIL_LENGTH }, () => ({ x: -100, y: -100 }))
   )
@@ -26,62 +28,72 @@ export const CustomCursor: React.FC = () => {
     const handleMouseMove = (e: MouseEvent) => {
       cursorX.set(e.clientX)
       cursorY.set(e.clientY)
-    }
+      isMoving.current = true
 
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      const isClickable = target.closest('a, button, [role="button"], input, textarea, select, [data-cursor="pointer"]')
-      setIsPointer(!!isClickable)
+      // Reset the "stop" timer on every move
+      if (moveTimeout.current) clearTimeout(moveTimeout.current)
+      moveTimeout.current = setTimeout(() => {
+        isMoving.current = false
+      }, 80)
     }
 
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
 
-    // Animate the trail with requestAnimationFrame
     const animateTrail = () => {
       const cx = cursorX.get()
       const cy = cursorY.get()
       const trail = trailRef.current
 
-      // Leader follows cursor
+      // Leader always follows cursor
       trail[0] = { x: cx, y: cy }
-      // Each subsequent point eases toward the one before it
+
       for (let i = 1; i < TRAIL_LENGTH; i++) {
         const prev = trail[i - 1]
+        // Slower easing for a longer, smoother trail
+        const ease = 0.25
         trail[i] = {
-          x: trail[i].x + (prev.x - trail[i].x) * 0.35,
-          y: trail[i].y + (prev.y - trail[i].y) * 0.35,
+          x: trail[i].x + (prev.x - trail[i].x) * ease,
+          y: trail[i].y + (prev.y - trail[i].y) * ease,
         }
       }
 
-      // Apply positions to DOM
+      // Calculate if actually moving (distance between cursor and last known stop)
+      const dx = cx - prevPos.current.x
+      const dy = cy - prevPos.current.y
+      const speed = Math.sqrt(dx * dx + dy * dy)
+
       trailEls.current.forEach((el, i) => {
         if (!el) return
         const p = trail[i]
         const progress = i / TRAIL_LENGTH
-        const size = Math.max(2, 8 * (1 - progress))
-        const opacity = 0.6 * (1 - progress)
+
+        // Only show trail when moving, fade based on speed
+        const moveFactor = isMoving.current ? Math.min(1, speed / 8) : 0
+        const size = Math.max(1, 10 * (1 - progress) * moveFactor)
+        const opacity = 0.7 * (1 - progress) * moveFactor
+
         el.style.transform = `translate(${p.x - size / 2}px, ${p.y - size / 2}px)`
         el.style.width = `${size}px`
         el.style.height = `${size}px`
         el.style.opacity = `${opacity}`
       })
 
+      prevPos.current = { x: cx, y: cy }
       animFrame.current = requestAnimationFrame(animateTrail)
     }
 
     window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseover', handleMouseOver)
     document.addEventListener('mouseleave', handleMouseLeave)
     document.addEventListener('mouseenter', handleMouseEnter)
     animFrame.current = requestAnimationFrame(animateTrail)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseover', handleMouseOver)
       document.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseenter', handleMouseEnter)
       cancelAnimationFrame(animFrame.current)
+      if (moveTimeout.current) clearTimeout(moveTimeout.current)
     }
   }, [cursorX, cursorY])
 
@@ -89,13 +101,12 @@ export const CustomCursor: React.FC = () => {
 
   return (
     <>
-      {/* Trail dots only - no main cursor element */}
       {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
         <div
           key={i}
           ref={(el) => { trailEls.current[i] = el }}
           className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full bg-[#1db954]"
-          style={{ willChange: 'transform, opacity' }}
+          style={{ willChange: 'transform, opacity', opacity: 0 }}
         />
       ))}
     </>

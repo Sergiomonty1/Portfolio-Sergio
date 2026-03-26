@@ -1,21 +1,17 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { useMotionValue } from 'framer-motion'
 
-const TRAIL_LENGTH = 20
+const TRAIL_LENGTH = 50
+const LINE_COLOR = '#1db954'
 
 export const CustomCursor: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false)
-  const cursorX = useMotionValue(-100)
-  const cursorY = useMotionValue(-100)
-  const prevPos = useRef({ x: -100, y: -100 })
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const points = useRef<{ x: number; y: number }[]>([])
+  const mousePos = useRef({ x: -100, y: -100 })
   const isMoving = useRef(false)
   const moveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const trailRef = useRef<{ x: number; y: number }[]>(
-    Array.from({ length: TRAIL_LENGTH }, () => ({ x: -100, y: -100 }))
-  )
-  const trailEls = useRef<(HTMLDivElement | null)[]>([])
   const animFrame = useRef<number>(0)
 
   useEffect(() => {
@@ -25,90 +21,116 @@ export const CustomCursor: React.FC = () => {
 
     setIsVisible(true)
 
-    const handleMouseMove = (e: MouseEvent) => {
-      cursorX.set(e.clientX)
-      cursorY.set(e.clientY)
-      isMoving.current = true
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
 
-      // Reset the "stop" timer on every move
+    const resize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePos.current = { x: e.clientX, y: e.clientY }
+      isMoving.current = true
       if (moveTimeout.current) clearTimeout(moveTimeout.current)
       moveTimeout.current = setTimeout(() => {
         isMoving.current = false
-      }, 80)
+      }, 120)
     }
 
     const handleMouseLeave = () => setIsVisible(false)
     const handleMouseEnter = () => setIsVisible(true)
 
-    const animateTrail = () => {
-      const cx = cursorX.get()
-      const cy = cursorY.get()
-      const trail = trailRef.current
+    const animate = () => {
+      if (!ctx || !canvas) return
 
-      // Leader always follows cursor
-      trail[0] = { x: cx, y: cy }
+      ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      for (let i = 1; i < TRAIL_LENGTH; i++) {
-        const prev = trail[i - 1]
-        // Slower easing for a longer, smoother trail
-        const ease = 0.25
-        trail[i] = {
-          x: trail[i].x + (prev.x - trail[i].x) * ease,
-          y: trail[i].y + (prev.y - trail[i].y) * ease,
+      // Add new point at mouse position
+      if (isMoving.current) {
+        const last = points.current[points.current.length - 1]
+        const mx = mousePos.current.x
+        const my = mousePos.current.y
+        // Only add point if moved enough distance (prevents clustering)
+        if (!last || Math.hypot(mx - last.x, my - last.y) > 2) {
+          points.current.push({ x: mx, y: my })
         }
       }
 
-      // Calculate if actually moving (distance between cursor and last known stop)
-      const dx = cx - prevPos.current.x
-      const dy = cy - prevPos.current.y
-      const speed = Math.sqrt(dx * dx + dy * dy)
+      // Keep trail to max length
+      while (points.current.length > TRAIL_LENGTH) {
+        points.current.shift()
+      }
 
-      trailEls.current.forEach((el, i) => {
-        if (!el) return
-        const p = trail[i]
-        const progress = i / TRAIL_LENGTH
+      const pts = points.current
+      if (pts.length < 2) {
+        animFrame.current = requestAnimationFrame(animate)
+        return
+      }
 
-        // Only show trail when moving, fade based on speed
-        const moveFactor = isMoving.current ? Math.min(1, speed / 8) : 0
-        const size = Math.max(1, 10 * (1 - progress) * moveFactor)
-        const opacity = 0.7 * (1 - progress) * moveFactor
+      // If not moving, gradually reduce trail
+      if (!isMoving.current && pts.length > 0) {
+        pts.shift()
+      }
 
-        el.style.transform = `translate(${p.x - size / 2}px, ${p.y - size / 2}px)`
-        el.style.width = `${size}px`
-        el.style.height = `${size}px`
-        el.style.opacity = `${opacity}`
-      })
+      // Draw smooth curve through points
+      ctx.lineCap = 'round'
+      ctx.lineJoin = 'round'
 
-      prevPos.current = { x: cx, y: cy }
-      animFrame.current = requestAnimationFrame(animateTrail)
+      for (let i = 1; i < pts.length; i++) {
+        const progress = i / pts.length
+        const opacity = progress * 0.8
+        const width = progress * 3.5
+
+        ctx.beginPath()
+        ctx.strokeStyle = `rgba(29, 185, 84, ${opacity})`
+        ctx.lineWidth = width
+
+        if (i === 1) {
+          ctx.moveTo(pts[0].x, pts[0].y)
+          ctx.lineTo(pts[1].x, pts[1].y)
+        } else {
+          // Use quadratic curves for smoothness
+          const prev = pts[i - 1]
+          const curr = pts[i]
+          const midX = (prev.x + curr.x) / 2
+          const midY = (prev.y + curr.y) / 2
+          ctx.moveTo((pts[i - 2].x + prev.x) / 2, (pts[i - 2].y + prev.y) / 2)
+          ctx.quadraticCurveTo(prev.x, prev.y, midX, midY)
+        }
+
+        ctx.stroke()
+      }
+
+      animFrame.current = requestAnimationFrame(animate)
     }
 
     window.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('mouseleave', handleMouseLeave)
     document.addEventListener('mouseenter', handleMouseEnter)
-    animFrame.current = requestAnimationFrame(animateTrail)
+    animFrame.current = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('resize', resize)
       document.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseenter', handleMouseEnter)
       cancelAnimationFrame(animFrame.current)
       if (moveTimeout.current) clearTimeout(moveTimeout.current)
     }
-  }, [cursorX, cursorY])
+  }, [])
 
   if (!isVisible) return null
 
   return (
-    <>
-      {Array.from({ length: TRAIL_LENGTH }).map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => { trailEls.current[i] = el }}
-          className="fixed top-0 left-0 pointer-events-none z-[9998] rounded-full bg-[#1db954]"
-          style={{ willChange: 'transform, opacity', opacity: 0 }}
-        />
-      ))}
-    </>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-[9998]"
+      style={{ willChange: 'transform' }}
+    />
   )
 }

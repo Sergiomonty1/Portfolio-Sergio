@@ -3,9 +3,9 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-const line1 = 'Hola,'
-const line2 = "Soy Sergio,"
-const line3 = 'game developer'
+const line1 = 'Sergio'
+const line2 = 'Montero'
+const line3 = 'Carmona'
 
 const letterVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -87,7 +87,6 @@ export const HeroSection: React.FC = () => {
           <AnimatedLine 
             text={line2} 
             startIndex={totalChars1} 
-            accentChar={{ index: 4, color: 'text-accent' }}
           />
           <br />
           <AnimatedLine 
@@ -115,7 +114,7 @@ export const HeroSection: React.FC = () => {
         >
           <p className="tag-decoration mb-1">{'<p>'}</p>
           <p className="text-gray-400 text-lg sm:text-xl max-w-xl tracking-wide font-light">
-            Desarrollador de Videojuegos Mobile / Unity 3D & C#
+            Unity Game Developer
           </p>
           <p className="tag-decoration mt-1">{'</p>'}</p>
         </motion.div>

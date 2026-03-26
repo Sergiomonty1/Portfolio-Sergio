@@ -1,25 +1,24 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
-const TRAIL_LENGTH = 50
-const LINE_COLOR = '#1db954'
+const TRAIL_LENGTH = 80
 
 export const CustomCursor: React.FC = () => {
-  const [isVisible, setIsVisible] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const points = useRef<{ x: number; y: number }[]>([])
-  const mousePos = useRef({ x: -100, y: -100 })
+  const mousePos = useRef({ x: -200, y: -200 })
   const isMoving = useRef(false)
+  const isTouchDevice = useRef(false)
   const moveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const animFrame = useRef<number>(0)
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-    if (isTouchDevice) return
-
-    setIsVisible(true)
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      isTouchDevice.current = true
+      return
+    }
 
     const canvas = canvasRef.current
     if (!canvas) return
@@ -39,92 +38,80 @@ export const CustomCursor: React.FC = () => {
       if (moveTimeout.current) clearTimeout(moveTimeout.current)
       moveTimeout.current = setTimeout(() => {
         isMoving.current = false
-      }, 120)
+      }, 150)
     }
 
-    const handleMouseLeave = () => setIsVisible(false)
-    const handleMouseEnter = () => setIsVisible(true)
-
     const animate = () => {
-      if (!ctx || !canvas) return
-
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Add new point at mouse position
+      const mx = mousePos.current.x
+      const my = mousePos.current.y
+
+      // Add points while moving
       if (isMoving.current) {
         const last = points.current[points.current.length - 1]
-        const mx = mousePos.current.x
-        const my = mousePos.current.y
-        // Only add point if moved enough distance (prevents clustering)
-        if (!last || Math.hypot(mx - last.x, my - last.y) > 2) {
+        if (!last || Math.hypot(mx - last.x, my - last.y) > 1.5) {
           points.current.push({ x: mx, y: my })
         }
       }
 
-      // Keep trail to max length
+      // Trim trail
       while (points.current.length > TRAIL_LENGTH) {
         points.current.shift()
       }
 
+      // Fade out when stopped
+      if (!isMoving.current && points.current.length > 0) {
+        points.current.shift()
+        if (points.current.length > 2) points.current.shift()
+      }
+
       const pts = points.current
-      if (pts.length < 2) {
-        animFrame.current = requestAnimationFrame(animate)
-        return
-      }
+      if (pts.length >= 3) {
+        // Draw a single smooth path with gradient-like segments
+        for (let i = 2; i < pts.length; i++) {
+          const t = i / pts.length // 0 = tail, 1 = head
+          const opacity = t * t * 0.9
+          const width = t * 4
 
-      // If not moving, gradually reduce trail
-      if (!isMoving.current && pts.length > 0) {
-        pts.shift()
-      }
+          const p0 = pts[i - 2]
+          const p1 = pts[i - 1]
+          const p2 = pts[i]
+          const cpX = p1.x
+          const cpY = p1.y
+          const endX = (p1.x + p2.x) / 2
+          const endY = (p1.y + p2.y) / 2
 
-      // Draw smooth curve through points
-      ctx.lineCap = 'round'
-      ctx.lineJoin = 'round'
-
-      for (let i = 1; i < pts.length; i++) {
-        const progress = i / pts.length
-        const opacity = progress * 0.8
-        const width = progress * 3.5
-
-        ctx.beginPath()
-        ctx.strokeStyle = `rgba(29, 185, 84, ${opacity})`
-        ctx.lineWidth = width
-
-        if (i === 1) {
-          ctx.moveTo(pts[0].x, pts[0].y)
-          ctx.lineTo(pts[1].x, pts[1].y)
-        } else {
-          // Use quadratic curves for smoothness
-          const prev = pts[i - 1]
-          const curr = pts[i]
-          const midX = (prev.x + curr.x) / 2
-          const midY = (prev.y + curr.y) / 2
-          ctx.moveTo((pts[i - 2].x + prev.x) / 2, (pts[i - 2].y + prev.y) / 2)
-          ctx.quadraticCurveTo(prev.x, prev.y, midX, midY)
+          ctx.beginPath()
+          ctx.moveTo((p0.x + p1.x) / 2, (p0.y + p1.y) / 2)
+          ctx.quadraticCurveTo(cpX, cpY, endX, endY)
+          ctx.strokeStyle = `rgba(29, 185, 84, ${opacity})`
+          ctx.lineWidth = width
+          ctx.lineCap = 'round'
+          ctx.stroke()
         }
 
-        ctx.stroke()
+        // Bright dot at the head
+        const head = pts[pts.length - 1]
+        ctx.beginPath()
+        ctx.arc(head.x, head.y, 3, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(29, 185, 84, 0.9)'
+        ctx.fill()
       }
 
       animFrame.current = requestAnimationFrame(animate)
     }
 
     window.addEventListener('mousemove', handleMouseMove)
-    document.addEventListener('mouseleave', handleMouseLeave)
-    document.addEventListener('mouseenter', handleMouseEnter)
     animFrame.current = requestAnimationFrame(animate)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
       window.removeEventListener('resize', resize)
-      document.removeEventListener('mouseleave', handleMouseLeave)
-      document.removeEventListener('mouseenter', handleMouseEnter)
       cancelAnimationFrame(animFrame.current)
       if (moveTimeout.current) clearTimeout(moveTimeout.current)
     }
   }, [])
-
-  if (!isVisible) return null
 
   return (
     <canvas

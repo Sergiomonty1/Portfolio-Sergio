@@ -195,7 +195,7 @@ export const ContactSection: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <FiMapPin className="text-[#1db954] flex-shrink-0" size={20} />
                   <div>
-                    <p className="text-white font-semibold">Calle Igualdad, La Algaba, Sevilla</p>
+                    <p className="text-white font-semibold">La Algaba, Sevilla</p>
                     <p className="text-gray-500 text-sm">Disponible para trabajo remoto</p>
                   </div>
                 </div>
@@ -240,14 +240,14 @@ export const ContactSection: React.FC = () => {
             <div className="relative h-[300px] sm:h-[350px] bg-[#111] border border-gray-800 overflow-hidden">
               <iframe
                 title="Ubicación - La Algaba, Sevilla"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-6.0025%2C37.4525%2C-5.9550%2C37.4705&layer=mapnik&marker=37.4613%2C-5.9788"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-6.035%2C37.450%2C-5.990%2C37.476&layer=mapnik&marker=37.4630%2C-6.0130"
                 className="w-full h-full border-0 grayscale invert opacity-80 contrast-125"
                 loading="lazy"
                 referrerPolicy="no-referrer"
               />
               <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-4 py-3 border border-gray-800">
                 <p className="text-white font-semibold text-sm">Sergio Montero Carmona</p>
-                <p className="text-gray-400 text-xs">Calle Igualdad, La Algaba, Sevilla</p>
+                <p className="text-gray-400 text-xs">La Algaba, Sevilla</p>
               </div>
             </div>
           </motion.div>

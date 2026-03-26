@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FiExternalLink, FiGithub, FiX, FiPlay } from 'react-icons/fi'
+import { FiExternalLink, FiGithub, FiX, FiPlay, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
 
 interface Project {
   id: string
@@ -26,36 +26,40 @@ const fallbackProjects: Project[] = [
     shortDescription: '1K+ descargas · 4.9/5 estrellas en Google Play',
     description: 'Juego de tenis competitivo para móviles. Compite en partidos 1v1 online, desbloquea y mejora personajes únicos con estadísticas personalizables (Resistencia, Velocidad, Agilidad, Servicio). Colecciona entrenadores, accesorios, raquetas y bolsas para potenciar a tu jugador. Sistema de torneos con diferentes canchas, progresión con recompensas y modo carrera. Monetización con AdMob e IAPs, analíticas completas con Firebase y rendimiento optimizado para dispositivos de gama baja a alta.',
     technologies: ['Unity 3D', 'C#', 'Firebase', 'Google Play', 'AdMob', 'Analytics'],
-    image: '/projects/tennis-master.jpg',
+    image: '/icons/IconTennisMaster.jpeg',
     color: 'border-t-accent',
     playStoreUrl: 'https://play.google.com/store/apps/details?id=com.vivastudios.tennis.masters',
+    gallery: ['/images/Tennis.jpeg', '/images/Tennis1.jpeg', '/images/Tennis2.jpeg', '/images/Tennis3.jpeg'],
   },
   {
     id: '2',
     title: 'Lost in Arcade',
-    shortDescription: 'Juego arcade retro con mecánicas innovadoras',
-    description: 'Juego arcade con estética retro y mecánicas de gameplay innovadoras. Desarrollo completo desde el concepto hasta la publicación, con sistema de puntuación, niveles procedurales y optimización para dispositivos móviles. Diseñado para sesiones rápidas y adictivas.',
-    technologies: ['Unity 3D', 'C#', 'DOTween', 'Firebase', 'AdMob'],
-    image: '/projects/lost-in-arcade.jpg',
+    shortDescription: 'Aventura 3D con minijuegos arcade y sistema de medallas',
+    description: 'Proyecto 3D donde el protagonista se ha quedado encerrado en una sala de recreativos. Para escapar, deberá jugar a las distintas máquinas arcade (Pong, Tetris, Comecocos y más), ganar medallas con sus puntuaciones y acumular las suficientes para comprar la llave en la tienda y poder salir. Incluye sistema de ranking online, múltiples minijuegos con mecánicas únicas, tienda con economía interna y un entorno 3D explorable lleno de detalles retro.',
+    technologies: ['Unity 3D', 'C#', 'DOTween', 'Firebase', 'JSON'],
+    image: '/icons/LostInArcadeIcon.png',
     color: 'border-t-blue-400',
+    gallery: ['/images/LostInArcade.png', '/images/LostInArcade1.png', '/images/LostInArcade2.png', '/images/LostInArcade3.png', '/images/LostInArcade4.png', '/images/LostInArcade5.png', '/images/LostInArcade6.png', '/images/LostInArcade7.png', '/images/LostInArcade8.png', '/images/LostInArcade9.png'],
   },
   {
     id: '3',
     title: 'Project Aster',
-    shortDescription: 'Proyecto de acción / aventura en desarrollo',
-    description: 'Proyecto de acción y aventura en desarrollo con enfoque en narrativa interactiva y combate dinámico. Arquitectura modular con patrones de diseño escalables, sistema de IA para enemigos con árboles de comportamiento y gestión avanzada de estados. Gráficos estilizados y optimizados para múltiples plataformas.',
-    technologies: ['Unity 3D', 'C#', 'Behavior Trees', 'JSON', 'Git'],
-    image: '/projects/project-aster.jpg',
+    shortDescription: 'Plataformas 2D con combates contra bosses épicos',
+    description: 'Juego de plataformas 2D pixel art ambientado en instalaciones futuristas. Controla a un pequeño robot que debe avanzar a través de niveles con trampas, plataformas móviles y obstáculos peligrosos, enfrentándose a diversos jefes finales con patrones de ataque únicos y barras de vida. Cada boss requiere una estrategia diferente para ser derrotado. El juego incluye sistema de vidas, coleccionables y múltiples zonas con estéticas diferenciadas.',
+    technologies: ['Unity 3D', 'C#', 'Pixel Art', 'Behavior Trees', 'Git'],
+    image: '/icons/ProjectAsterIcon.png',
     color: 'border-t-purple-400',
+    gallery: ['/images/ProjectAster.png', '/images/ProjectAster1.png', '/images/ProjectAster2.png', '/images/ProjectAster3.png', '/images/ProjectAster4.png'],
   },
   {
     id: '4',
     title: 'Multiplayer FPS Shooter',
     shortDescription: 'Shooter multijugador en tiempo real con Photon',
-    description: 'Shooter en primera persona con modo multijugador en tiempo real utilizando Photon PUN2. Implementación de netcode, sincronización de estados, sistema de matchmaking, armas con diferentes estadísticas y modos de juego. Optimización de red para minimizar latencia y ofrecer una experiencia fluida.',
-    technologies: ['Unity 3D', 'C#', 'Photon PUN2', 'Firebase', 'REST API'],
-    image: '/projects/fps-shooter.jpg',
+    description: 'Shooter en tercera persona multijugador en tiempo real. El enfoque principal del proyecto es la programación de red: sincronización de estados, netcode, sistema de nombres de jugadores, barras de vida, armas con físicas y spawning. Desarrollado con Photon PUN2.  El arte es secundario, priorizando la arquitectura de red, la latencia mínima y la experiencia de juego fluida entre múltiples jugadores conectados simultáneamente.',
+    technologies: ['Unity 3D', 'C#', 'Photon PUN2', 'Networking', 'REST API'],
+    image: '/icons/MultiplayerIcon.png',
     color: 'border-t-red-400',
+    gallery: ['/images/Multiplayer.png', '/images/Multiplayer1.png'],
   },
 ]
 
@@ -102,6 +106,114 @@ const ProjectCard: React.FC<{ project: Project; index: number; onClick: () => vo
     </div>
   </motion.div>
 )
+
+const GalleryViewer: React.FC<{ images: string[] }> = ({ images }) => {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [fullscreen, setFullscreen] = useState(false)
+
+  const prev = useCallback(() => {
+    setCurrentIndex((i) => (i === 0 ? images.length - 1 : i - 1))
+  }, [images.length])
+
+  const next = useCallback(() => {
+    setCurrentIndex((i) => (i === images.length - 1 ? 0 : i + 1))
+  }, [images.length])
+
+  return (
+    <div className="mb-8">
+      <h4 className="text-sm font-semibold text-accent uppercase tracking-widest mb-4">Galería</h4>
+      
+      {/* Main image viewer */}
+      <div className="relative bg-surface-200 rounded-sm overflow-hidden mb-3 group">
+        <div className="aspect-video relative cursor-pointer" onClick={() => setFullscreen(true)}>
+          <img
+            src={images[currentIndex]}
+            alt=""
+            className="w-full h-full object-contain"
+          />
+        </div>
+        
+        {images.length > 1 && (
+          <>
+            <button
+              onClick={(e) => { e.stopPropagation(); prev() }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <FiChevronLeft size={20} />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); next() }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <FiChevronRight size={20} />
+            </button>
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black/70 px-3 py-1 rounded-full text-xs text-gray-300">
+              {currentIndex + 1} / {images.length}
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Thumbnails */}
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {images.map((img, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`flex-shrink-0 w-20 h-14 rounded-sm overflow-hidden border-2 transition-colors ${
+                idx === currentIndex ? 'border-accent' : 'border-transparent opacity-50 hover:opacity-80'
+              }`}
+            >
+              <img src={img} alt="" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Fullscreen overlay */}
+      <AnimatePresence>
+        {fullscreen && (
+          <motion.div
+            className="fixed inset-0 z-[200] bg-black/95 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setFullscreen(false)}
+          >
+            <button
+              onClick={() => setFullscreen(false)}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-white bg-black/50 rounded-full z-10"
+            >
+              <FiX size={20} />
+            </button>
+            <img
+              src={images[currentIndex]}
+              alt=""
+              className="max-w-[90vw] max-h-[90vh] object-contain"
+            />
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prev() }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-black/70 text-white rounded-full"
+                >
+                  <FiChevronLeft size={24} />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); next() }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-black/70 text-white rounded-full"
+                >
+                  <FiChevronRight size={24} />
+                </button>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
 
 const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ project, onClose }) => (
   <motion.div
@@ -154,6 +266,11 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
         <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">{project.title}</h2>
         
         <p className="text-gray-300 text-lg leading-relaxed mb-8">{project.description}</p>
+
+        {/* Image Gallery */}
+        {project.gallery && project.gallery.length > 0 && (
+          <GalleryViewer images={project.gallery} />
+        )}
 
         {/* Technologies */}
         <div className="mb-8">

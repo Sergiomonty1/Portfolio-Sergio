@@ -195,7 +195,7 @@ export const ContactSection: React.FC = () => {
                 <div className="flex items-center gap-4">
                   <FiMapPin className="text-[#1db954] flex-shrink-0" size={20} />
                   <div>
-                    <p className="text-white font-semibold">La Algaba, Sevilla, España</p>
+                    <p className="text-white font-semibold">Calle Igualdad, La Algaba, Sevilla</p>
                     <p className="text-gray-500 text-sm">Disponible para trabajo remoto</p>
                   </div>
                 </div>
@@ -247,7 +247,7 @@ export const ContactSection: React.FC = () => {
               />
               <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm px-4 py-3 border border-gray-800">
                 <p className="text-white font-semibold text-sm">Sergio Montero Carmona</p>
-                <p className="text-gray-400 text-xs">La Algaba, Sevilla</p>
+                <p className="text-gray-400 text-xs">Calle Igualdad, La Algaba, Sevilla</p>
               </div>
             </div>
           </motion.div>

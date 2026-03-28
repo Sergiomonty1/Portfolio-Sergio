@@ -69,7 +69,7 @@ export const HeroSection: React.FC = () => {
         S
       </motion.div>
 
-      <div className="relative z-10 px-8 sm:px-16 lg:px-24 xl:px-32 max-w-7xl w-full">
+      <div className="relative z-10 px-6 sm:px-16 lg:px-24 xl:px-32 max-w-7xl w-full">
         {/* HTML tag decoration */}
         <motion.p
           className="tag-decoration mb-2"
@@ -81,7 +81,7 @@ export const HeroSection: React.FC = () => {
         </motion.p>
 
         {/* Main title */}
-        <h1 className="text-[3.5rem] sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tight text-white">
+        <h1 className="text-[2.8rem] sm:text-7xl md:text-8xl lg:text-9xl font-black leading-[0.9] tracking-tight text-white">
           <AnimatedLine text={line1} startIndex={0} />
           <br />
           <AnimatedLine 
@@ -110,10 +110,10 @@ export const HeroSection: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: subtitleDelay, duration: 0.8 }}
-          className="mt-10"
+          className="mt-8 sm:mt-10"
         >
           <p className="tag-decoration mb-1">{'<p>'}</p>
-          <p className="text-gray-400 text-lg sm:text-xl max-w-xl tracking-wide font-light">
+          <p className="text-gray-400 text-base sm:text-xl max-w-xl tracking-wide font-light">
             Unity Game Developer
           </p>
           <p className="tag-decoration mt-1">{'</p>'}</p>
@@ -124,11 +124,11 @@ export const HeroSection: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: subtitleDelay + 0.3, duration: 0.8 }}
-          className="mt-12"
+          className="mt-10 sm:mt-12"
         >
           <motion.a
             href="#contact"
-            className="inline-block px-10 py-4 border border-accent text-accent text-sm font-medium tracking-[0.3em] uppercase hover:bg-accent hover:text-black transition-all duration-300"
+            className="inline-block px-8 sm:px-10 py-3.5 sm:py-4 border border-accent text-accent text-sm font-medium tracking-[0.3em] uppercase hover:bg-accent hover:text-black transition-all duration-300"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             data-cursor="pointer"
@@ -137,6 +137,35 @@ export const HeroSection: React.FC = () => {
           </motion.a>
         </motion.div>
       </div>
+
+      {/* Scroll indicator - mobile & desktop */}
+      <motion.div
+        className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: subtitleDelay + 1, duration: 1 }}
+      >
+        <span className="text-[10px] text-gray-600 uppercase tracking-[0.3em] font-medium">Scroll</span>
+        <motion.div
+          className="w-5 h-8 rounded-full border border-gray-700 flex justify-center pt-1.5"
+          initial={{ opacity: 0.6 }}
+        >
+          <motion.div
+            className="w-1 h-2 rounded-full bg-accent"
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </motion.div>
+      </motion.div>
+
+      {/* Animated divider line */}
+      <motion.div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent"
+        initial={{ width: 0 }}
+        whileInView={{ width: '60%' }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }}
+      />
     </section>
   )
 }

@@ -130,3 +130,76 @@ textarea:-webkit-autofill:focus {
   caret-color: #ffffff;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+/* ── Shine sweep on project cards ── */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+}
+.card-shine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.04) 45%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 55%,
+    transparent 60%
+  );
+  transform: translateX(-150%);
+  transition: none;
+  pointer-events: none;
+}
+.card-shine:hover::before {
+  animation: shine-sweep 0.7s ease-out forwards;
+}
+@keyframes shine-sweep {
+  to { transform: translateX(150%); }
+}
+
+/* ── Pulsing timeline dot ── */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(29, 185, 84, 0.4), 0 0 20px rgba(29, 185, 84, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(29, 185, 84, 0.7), 0 0 30px rgba(29, 185, 84, 0.35);
+    transform: scale(1.25);
+  }
+}
+.dot-pulse {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+/* ── Floating gradient orbs ── */
+@keyframes float-orb {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  animation: float-orb 15s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── Text reveal blur ── */
+@keyframes text-unblur {
+  from {
+    filter: blur(8px);
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

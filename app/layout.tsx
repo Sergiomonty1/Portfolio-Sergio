@@ -27,7 +27,7 @@ export default function RootLayout({
           {children}
         </main>
         {/* Minimal footer */}
-        <footer className="py-8 px-8 sm:px-16 lg:px-24 border-t border-gray-900">
+        <footer className="py-8 pb-24 lg:pb-8 px-6 sm:px-16 lg:px-24 border-t border-gray-900">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-gray-600">
               © {new Date().getFullYear()} Sergio Montero Carmona. Todos los derechos reservados.

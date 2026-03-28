@@ -39,8 +39,12 @@ const education = [
 
 export const ExperienceSection: React.FC = () => {
   return (
-    <section id="experience" className="py-32 lg:py-40 relative">
-      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+    <section id="experience" className="py-24 sm:py-32 lg:py-40 relative overflow-hidden">
+      {/* Animated gradient orbs */}
+      <div className="orb w-[350px] h-[350px] bg-blue-500/[0.03] -top-32 -left-32" style={{ animationDelay: '-3s' }} />
+      <div className="orb w-[250px] h-[250px] bg-accent/[0.03] bottom-0 right-0" style={{ animationDelay: '-8s' }} />
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-16 lg:px-24 relative z-10">
         <motion.p
           className="tag-decoration mb-2"
           initial={{ opacity: 0 }}
@@ -51,7 +55,7 @@ export const ExperienceSection: React.FC = () => {
         </motion.p>
 
         <motion.h2
-          className="text-5xl sm:text-6xl lg:text-7xl font-black text-accent mb-4 tracking-tight"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-accent mb-4 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -83,7 +87,7 @@ export const ExperienceSection: React.FC = () => {
             >
               {/* Dot */}
               <div className={`absolute -left-[9px] top-3 w-4 h-4 rounded-full ${
-                exp.current ? 'bg-accent shadow-[0_0_12px_rgba(29,185,84,0.6)]' : 'bg-gray-700'
+                exp.current ? 'bg-accent dot-pulse' : 'bg-gray-700'
               }`} />
 
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3">
@@ -101,13 +105,28 @@ export const ExperienceSection: React.FC = () => {
                 </div>
               </div>
 
-              <p className="text-gray-400 leading-relaxed mb-4 max-w-3xl">{exp.description}</p>
+              <motion.p
+                className="text-gray-400 leading-relaxed mb-4 max-w-3xl"
+                initial={{ opacity: 0, filter: 'blur(6px)' }}
+                whileInView={{ opacity: 1, filter: 'blur(0px)' }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: index * 0.2 + 0.3 }}
+              >
+                {exp.description}
+              </motion.p>
 
               <div className="flex flex-wrap gap-2">
-                {exp.technologies.map((tech) => (
-                  <span key={tech} className="text-xs px-3 py-1 border border-gray-800 text-gray-500 font-mono">
+                {exp.technologies.map((tech, techIdx) => (
+                  <motion.span
+                    key={tech}
+                    className="text-xs px-3 py-1 border border-gray-800 text-gray-500 font-mono"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.2 + 0.4 + techIdx * 0.05 }}
+                  >
                     {tech}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
@@ -116,7 +135,7 @@ export const ExperienceSection: React.FC = () => {
 
         {/* Education */}
         <motion.h3
-          className="text-3xl sm:text-4xl font-black text-accent mt-20 mb-8 tracking-tight"
+          className="text-2xl sm:text-4xl font-black text-accent mt-20 mb-8 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}

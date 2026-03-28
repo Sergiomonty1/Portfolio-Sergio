@@ -51,8 +51,12 @@ export const ContactSection: React.FC = () => {
   const inputClasses = "w-full px-0 py-3 bg-transparent border-b border-gray-800 text-white placeholder-gray-600 focus:outline-none focus:border-[#1db954] transition-colors font-light appearance-none autofill:bg-transparent"
 
   return (
-    <section id="contact" className="py-32 lg:py-40 relative">
-      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+    <section id="contact" className="py-24 sm:py-32 lg:py-40 pb-32 sm:pb-32 lg:pb-40 relative overflow-hidden">
+      {/* Animated gradient orbs */}
+      <div className="orb w-[300px] h-[300px] bg-accent/[0.04] top-20 -right-20" style={{ animationDelay: '-2s' }} />
+      <div className="orb w-[200px] h-[200px] bg-purple-500/[0.03] bottom-40 -left-20" style={{ animationDelay: '-10s' }} />
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-16 lg:px-24 relative z-10">
         <motion.p
           className="tag-decoration mb-2"
           initial={{ opacity: 0 }}
@@ -63,7 +67,7 @@ export const ContactSection: React.FC = () => {
         </motion.p>
 
         <motion.h2
-          className="text-5xl sm:text-6xl lg:text-7xl font-black text-[#1db954] mb-2 tracking-tight"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-[#1db954] mb-2 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}

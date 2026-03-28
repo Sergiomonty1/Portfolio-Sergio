@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useCallback, useRef, useState, useEffect, useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 
 const technologies = [
   'Unity', 'Unity 3D', 'C#', 'Firebase', 'Play Store',
@@ -86,7 +86,7 @@ const TechCloud: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[500px] lg:h-[600px] flex items-center justify-center"
+      className="relative w-full h-[350px] sm:h-[500px] lg:h-[600px] flex items-center justify-center"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
@@ -107,10 +107,67 @@ const TechCloud: React.FC = () => {
   )
 }
 
+// ── Text Reveal with Blur ──
+const RevealParagraph: React.FC<{ children: React.ReactNode; delay?: number }> = ({ children, delay = 0 }) => (
+  <motion.p
+    initial={{ opacity: 0, filter: 'blur(8px)', y: 8 }}
+    whileInView={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8, delay: delay + 0.3, ease: 'easeOut' }}
+  >
+    {children}
+  </motion.p>
+)
+
+// ── Animated Number Counter ──
+const StatCounter: React.FC<{ value: number; suffix?: string; label: string; decimals?: number }> = ({ 
+  value, suffix = '', label, decimals = 0 
+}) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
+  const [displayValue, setDisplayValue] = useState(0)
+
+  useEffect(() => {
+    if (!isInView) return
+    const duration = 2000
+    const start = performance.now()
+    const step = (now: number) => {
+      const elapsed = now - start
+      const progress = Math.min(elapsed / duration, 1)
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3)
+      setDisplayValue(eased * value)
+      if (progress < 1) requestAnimationFrame(step)
+    }
+    requestAnimationFrame(step)
+  }, [isInView, value])
+
+  return (
+    <motion.div
+      ref={ref}
+      className="text-center"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+    >
+      <div className="text-2xl sm:text-3xl font-black text-accent">
+        {decimals > 0 ? displayValue.toFixed(decimals) : Math.floor(displayValue)}
+        {suffix}
+      </div>
+      <div className="text-xs text-gray-500 uppercase tracking-widest mt-1">{label}</div>
+    </motion.div>
+  )
+}
+
 export const AboutSection: React.FC = () => {
   return (
-    <section id="about" className="py-32 lg:py-40 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+    <section id="about" className="py-24 sm:py-32 lg:py-40 relative overflow-hidden">
+      {/* Animated gradient orbs */}
+      <div className="orb w-[400px] h-[400px] bg-accent/[0.04] -top-40 -right-40" style={{ animationDelay: '0s' }} />
+      <div className="orb w-[300px] h-[300px] bg-blue-500/[0.03] bottom-20 -left-32" style={{ animationDelay: '-5s' }} />
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-16 lg:px-24 relative z-10">
         {/* Section tag */}
         <motion.p
           className="tag-decoration mb-2"
@@ -122,7 +179,7 @@ export const AboutSection: React.FC = () => {
         </motion.p>
         
         <motion.h2
-          className="text-5xl sm:text-6xl lg:text-7xl font-black text-accent mb-2 tracking-tight"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-accent mb-2 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -151,21 +208,28 @@ export const AboutSection: React.FC = () => {
             <p className="tag-decoration mb-2">{'<p>'}</p>
             
             <div className="space-y-6 text-gray-300 text-base sm:text-lg leading-relaxed">
-              <p>
+              <RevealParagraph delay={0}>
                 Desarrollador de Videojuegos Mobile especializado en <span className="text-accent font-semibold">Unity 3D</span> y <span className="text-accent font-semibold">C#</span>. Lidero el ciclo de vida completo de desarrollo, desde la arquitectura técnica hasta la publicación y análisis de datos post-lanzamiento.
-              </p>
+              </RevealParagraph>
               
-              <p>
+              <RevealParagraph delay={0.15}>
                 Actualmente soy <span className="text-white font-semibold">Lead Game Developer & Co-Fundador en MakTub Games</span>, donde he desarrollado {'"'}Tennis Masters: Spin Champs{'"'} — un juego con más de <span className="text-accent font-semibold">1K+ descargas</span> y <span className="text-accent font-semibold">4.9/5 estrellas</span> en Google Play, respaldado por Viva Games Studio.
-              </p>
+              </RevealParagraph>
               
-              <p>
+              <RevealParagraph delay={0.3}>
                 Mi enfoque técnico se centra en arquitectura de gameplay escalable, programación de IA adaptativa, optimización de rendimiento para dispositivos móviles e integración de SDKs y analíticas.
-              </p>
+              </RevealParagraph>
 
-              <p>
+              <RevealParagraph delay={0.45}>
                 Busco siempre resolver problemas técnicos complejos mediante código eficiente. Abierto a conectar con otros profesionales del sector y explorar nuevos retos.
-              </p>
+              </RevealParagraph>
+            </div>
+
+            {/* Animated Stats */}
+            <div className="grid grid-cols-3 gap-4 mt-8">
+              <StatCounter value={1000} suffix="+" label="Descargas" />
+              <StatCounter value={4.9} decimals={1} suffix="/5" label="Estrellas" />
+              <StatCounter value={3} suffix="+" label="Proyectos" />
             </div>
 
             <p className="tag-decoration mt-2">{'</p>'}</p>

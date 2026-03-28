@@ -65,7 +65,7 @@ const fallbackProjects: Project[] = [
 
 const ProjectCard: React.FC<{ project: Project; index: number; onClick: () => void }> = ({ project, index, onClick }) => (
   <motion.div
-    className={`group relative bg-surface-50 overflow-hidden cursor-pointer border-t-4 ${project.color}`}
+    className={`group relative bg-surface-50 overflow-hidden cursor-pointer border-t-4 card-shine ${project.color}`}
     initial={{ opacity: 0, y: 40 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
@@ -137,13 +137,13 @@ const GalleryViewer: React.FC<{ images: string[] }> = ({ images }) => {
           <>
             <button
               onClick={(e) => { e.stopPropagation(); prev() }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
             >
               <FiChevronLeft size={20} />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); next() }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-black/70 text-white rounded-full sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
             >
               <FiChevronRight size={20} />
             </button>
@@ -217,7 +217,7 @@ const GalleryViewer: React.FC<{ images: string[] }> = ({ images }) => {
 
 const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ project, onClose }) => (
   <motion.div
-    className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+    className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center sm:p-8"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
@@ -231,12 +231,16 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
     
     {/* Modal content */}
     <motion.div
-      className="relative bg-surface-100 max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-sm"
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0.95, opacity: 0 }}
+      className="relative bg-surface-100 max-w-4xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto rounded-t-xl sm:rounded-sm"
+      initial={{ scale: 0.95, opacity: 0, y: 40 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      exit={{ scale: 0.95, opacity: 0, y: 40 }}
       transition={{ duration: 0.25, ease: 'easeOut' }}
     >
+      {/* Mobile pull handle */}
+      <div className="sm:hidden flex justify-center py-2">
+        <div className="w-10 h-1 rounded-full bg-gray-600" />
+      </div>
       {/* Close button */}
       <button
         onClick={onClose}
@@ -262,7 +266,7 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
       </div>
 
       {/* Content */}
-      <div className="p-8 sm:p-12">
+      <div className="p-6 sm:p-8 md:p-12">
         <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">{project.title}</h2>
         
         <p className="text-gray-300 text-lg leading-relaxed mb-8">{project.description}</p>
@@ -276,10 +280,16 @@ const ProjectModal: React.FC<{ project: Project; onClose: () => void }> = ({ pro
         <div className="mb-8">
           <h4 className="text-sm font-semibold text-accent uppercase tracking-widest mb-4">Tecnologías</h4>
           <div className="flex flex-wrap gap-3">
-            {project.technologies.map((tech) => (
-              <span key={tech} className="px-4 py-2 bg-surface-200 text-gray-300 text-sm font-medium rounded-sm border border-gray-800">
+            {project.technologies.map((tech, techIdx) => (
+              <motion.span
+                key={tech}
+                className="px-4 py-2 bg-surface-200 text-gray-300 text-sm font-medium rounded-sm border border-gray-800"
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 + techIdx * 0.06 }}
+              >
                 {tech}
-              </span>
+              </motion.span>
             ))}
           </div>
         </div>
@@ -332,8 +342,12 @@ export const ProjectsSection: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
   return (
-    <section id="projects" className="py-32 lg:py-40 relative">
-      <div className="max-w-7xl mx-auto px-8 sm:px-16 lg:px-24">
+    <section id="projects" className="py-24 sm:py-32 lg:py-40 relative overflow-hidden">
+      {/* Animated gradient orbs */}
+      <div className="orb w-[350px] h-[350px] bg-accent/[0.03] -top-20 right-0" style={{ animationDelay: '-7s' }} />
+      <div className="orb w-[250px] h-[250px] bg-purple-500/[0.03] bottom-20 -left-32" style={{ animationDelay: '-12s' }} />
+
+      <div className="max-w-7xl mx-auto px-6 sm:px-16 lg:px-24 relative z-10">
         {/* Section tag */}
         <motion.p
           className="tag-decoration mb-2"
@@ -345,7 +359,7 @@ export const ProjectsSection: React.FC = () => {
         </motion.p>
 
         <motion.h2
-          className="text-5xl sm:text-6xl lg:text-7xl font-black text-accent mb-4 tracking-tight"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-accent mb-4 tracking-tight"
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
@@ -365,7 +379,7 @@ export const ProjectsSection: React.FC = () => {
         </motion.p>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
           {fallbackProjects.map((project, index) => (
             <ProjectCard 
               key={project.id} 

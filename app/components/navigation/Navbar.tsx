@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiLinkedin, FiGithub, FiYoutube } from 'react-icons/fi'
 
@@ -18,11 +17,9 @@ const socialLinks = [
 ]
 
 export const Navbar: React.FC = () => {
-  const pathname = usePathname()
   const [activeSection, setActiveSection] = useState('')
 
   useEffect(() => {
-    if (pathname.startsWith('/menu')) return
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -37,10 +34,7 @@ export const Navbar: React.FC = () => {
     const sections = document.querySelectorAll('section[id]')
     sections.forEach((section) => observer.observe(section))
     return () => sections.forEach((section) => observer.unobserve(section))
-  }, [pathname])
-
-  // Don't show portfolio nav on menu pages
-  if (pathname.startsWith('/menu')) return null
+  }, [])
 
   return (
     <>
